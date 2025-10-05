@@ -1,0 +1,57 @@
+debug:
+  update_interval: 60s
+
+packet_transport:
+  - platform: espnow
+    id: transport_output
+    espnow_id: espnow_main
+    ping_pong_enable: True
+    encryption:
+      key: "your-32-character-encryption-key"
+    sensors:
+      - esp32_temp
+      - loop_time
+      - heap_free
+      - heap_max
+      - wifi_signal_db
+      - startup
+    providers:
+      - name: ble-server  # Receive from server
+        encryption:
+          key: "your-32-character-encryption-key"
+
+espnow:
+  id: espnow_main
+  auto_add_peer: true
+
+sensor:
+  - platform: internal_temperature
+    name: "ESP32 Internal Temperature"
+    id: esp32_temp
+  - platform: packet_transport
+    provider: ble-server  # Match the provider name above
+    remote_id: esp32_temp  # The sensor ID from the server
+    id: server_temperature
+  - platform: template
+    name: "Client Temperature"
+    lambda: |-
+      return id(server_temperature).state;
+  - platform: uptime
+    type: timestamp
+    name: "System Startup"
+    id: startup
+  - platform: debug
+    free:
+      name: "Heap Free"
+      id: heap_free
+    block:
+      name: "Heap Max Block"
+      id: heap_max
+    loop_time:
+      name: "Loop Time"
+      id: loop_time
+  - platform: wifi_signal # Reports the WiFi signal strength/RSSI in dB
+    name: "WiFi Signal dB"
+    id: wifi_signal_db
+    update_interval: 60s
+    entity_category: "diagnostic"
