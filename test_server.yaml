@@ -1,0 +1,90 @@
+esphome:
+  name: espnow-server
+
+esp32:
+  board: esp32-c3-devkitm-1
+  variant: ESP32C3
+  flash_size: 4MB
+  framework:
+   type: esp-idf
+
+logger:
+  level: VERBOSE
+
+api:
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret your_ssid
+  password: !secret your_password
+
+packet_transport:
+  - platform: espnow
+    id: transport_output
+    ping_pong_enable: true
+    espnow_id: espnow_main
+    encryption:
+      key: "your-32-character-encryption-key"
+    sensors:
+      - esp32_temp  # Broadcast this sensor
+    providers:
+      - name: espnow-client  # Receive from server
+        encryption:
+          key: "your-32-character-encryption-key"
+
+espnow:
+  id: espnow_main
+  auto_add_peer: true
+
+
+
+
+# # Physical sensor that publishes to BLE
+sensor:
+  - platform: internal_temperature
+    name: "ESP32 Internal Temperature"
+    id: esp32_temp
+  - platform: packet_transport
+    provider: espnow-client
+    id: client_temperature
+  - platform: packet_transport
+    provider: espnow-client
+    id: loop_time
+  - platform: packet_transport
+    provider: espnow-client
+    id: heap_free
+  - platform: packet_transport
+    provider: espnow-client
+    id: heap_max
+  - platform: packet_transport
+    provider: espnow-client
+    id: wifi_signal_db
+  - platform: packet_transport
+    provider: espnow-client
+    id: startup
+  - platform: template
+    name: "Client Temperature"
+    lambda: |-
+      return id(client_temperature).state;
+  - platform: template
+    name: "Client Loop Time"
+    lambda: |-
+      return id(loop_time).state;
+  - platform: template
+    name: "Client Heap Free"
+    lambda: |-
+      return id(heap_free).state;
+  - platform: template
+    name: "Client Max Heap"
+    lambda: |-
+      return id(heap_max).state;
+  - platform: template
+    name: "Client Wifi Signal"
+    lambda: |-
+      return id(wifi_signal_db).state;
+  - platform: template
+    name: "Client Startup"
+    lambda: |-
+      return id(startup).state;
