@@ -1,3 +1,25 @@
+esphome:
+  name: espnow-client
+
+esp32:
+  board: esp32-c3-devkitm-1
+  variant: ESP32C3
+  flash_size: 4MB
+  framework:
+   type: esp-idf
+
+logger:
+  level: VERBOSE
+
+api:
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret your_ssid
+  password: !secret your_password
+  
 debug:
   update_interval: 60s
 
