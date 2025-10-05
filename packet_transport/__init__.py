@@ -12,7 +12,7 @@ import esphome.config_validation as cv
 
 from .. import espnow_ns, ESPNowComponent
 
-CODEOWNERS = ["@clydebarrow"]
+CODEOWNERS = ["@EasilyBoredEngineer"]
 DEPENDENCIES = ["espnow"]
 
 ESPNowTransport = espnow_ns.class_("ESPNowTransport", PacketTransport, PollingComponent)
