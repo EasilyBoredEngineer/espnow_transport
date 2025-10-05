@@ -38,7 +38,7 @@ packet_transport:
       - wifi_signal_db
       - startup
     providers:
-      - name: ble-server  # Receive from server
+      - name: espnow-server  # Receive from server
         encryption:
           key: "your-32-character-encryption-key"
 
@@ -51,7 +51,7 @@ sensor:
     name: "ESP32 Internal Temperature"
     id: esp32_temp
   - platform: packet_transport
-    provider: ble-server  # Match the provider name above
+    provider: espnow-server  # Match the provider name above
     remote_id: esp32_temp  # The sensor ID from the server
     id: server_temperature
   - platform: template
